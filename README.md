@@ -70,10 +70,26 @@ repeatedly (there are also alternatives to matrix inversion that we will
 not discuss here). Your assignment is to write a pair of functions that
 cache the inverse of a matrix.
 
-Write the following functions:
+### My solution
 
 1.  `makeCacheMatrix`: This function creates a special "matrix" object
     that can cache its inverse.
+
+### makeCacheMatrix function
+
+    makeCacheMatrix <- function(m = matrix()){
+	n <- NULL
+	set <- function(x){
+		m <<- x
+		n <<- NULL
+	}
+	get <- function() m
+	setinv <- function(inv) n<<-inv
+	getinv <- function() n
+	list(set=set, get=get, setinv=setinv, getinv=getinv)	
+}
+
+
 2.  `cacheSolve`: This function computes the inverse of the special
     "matrix" returned by `makeCacheMatrix` above. If the inverse has
     already been calculated (and the matrix has not changed), then
@@ -83,8 +99,74 @@ Computing the inverse of a square matrix can be done with the `solve`
 function in R. For example, if `X` is a square invertible matrix, then
 `solve(X)` returns its inverse.
 
-For this assignment, assume that the matrix supplied is always
-invertible.
+### cacheSolve function to find the inverse
+
+    cacheSolve <- function(m=matrix()){
+	n <- m$getinv()
+	if(!is.null(n)){
+		message("getting cached data")
+		return(n)
+	}
+	data<- m$get()
+	n<-solve(data)
+	m$setinv(n)
+	n
+} 
+
+For this assignment, assume that the matrix supplied is always invertible.
+
+###Testing of my cacheSolve
+
+> myMatrix<-makeCacheMatrix(matrix(1:4, 2, 2))
+# test the getter function of the matrix just created
+> myMatrix$get()
+     [,1] [,2]
+[1,]    1    3
+[2,]    2    4
+# test the initial inverse, no cache matrix is created yet
+> myMatrix$getinv()
+NULL
+# find the inverse
+> cacheSolve(myMatrix)
+     [,1] [,2]
+[1,]   -2  1.5
+[2,]    1 -0.5
+# get the cache data
+> cacheSolve(myMatrix)
+getting cached data
+     [,1] [,2]
+[1,]   -2  1.5
+[2,]    1 -0.5
+> myMatrix$getinv()
+     [,1] [,2]
+[1,]   -2  1.5
+[2,]    1 -0.5
+# test the setter funtion
+> myMatrix$set(matrix(c(2,2,1,4),2,2))
+> myMatrix$get()
+     [,1] [,2]
+[1,]    2    1
+[2,]    2    4
+> myMatrix$getinv()
+NULL
+# find the inverse of the new invertible matrix
+> cacheSolve(myMatrix)
+           [,1]       [,2]
+[1,]  0.6666667 -0.1666667
+[2,] -0.3333333  0.3333333
+> cacheSolve(myMatrix)
+getting cached data
+           [,1]       [,2]
+[1,]  0.6666667 -0.1666667
+[2,] -0.3333333  0.3333333
+# prove that the product of an invertible matrix and its inverse is an identity matrix
+> m2<-myMatrix$get()
+> n2<-myMatrix$getinv()
+> m2 %*% n2
+     [,1] [,2]
+[1,]    1    0
+[2,]    0    1
+
 
 In order to complete this assignment, you must do the following:
 
