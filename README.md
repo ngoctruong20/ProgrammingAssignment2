@@ -72,10 +72,8 @@ cache the inverse of a matrix.
 
 ### My solution
 
-1.  `makeCacheMatrix`: This function creates a special "matrix" object
-    that can cache its inverse.
-
 ### makeCacheMatrix function
+# This function is to create a special matrix that can cache its inverse
 
     makeCacheMatrix <- function(m = matrix()){
 	n <- NULL
@@ -90,16 +88,8 @@ cache the inverse of a matrix.
 }
 
 
-2.  `cacheSolve`: This function computes the inverse of the special
-    "matrix" returned by `makeCacheMatrix` above. If the inverse has
-    already been calculated (and the matrix has not changed), then
-    `cacheSolve` should retrieve the inverse from the cache.
-
-Computing the inverse of a square matrix can be done with the `solve`
-function in R. For example, if `X` is a square invertible matrix, then
-`solve(X)` returns its inverse.
-
 ### cacheSolve function to find the inverse
+# The function is to find the inverse of an invertible matrix. If the inverse has been calculated with the same matrix, it will not calculate again instead giving out the cached data. If a new matrix is entered, a new inverse will be calculated.
 
     cacheSolve <- function(m=matrix()){
 	n <- m$getinv()
